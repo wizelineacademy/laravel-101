@@ -7,13 +7,23 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-  public function index()
+  public function index(Request $request)
   {
-    $response = Http::get('https://pokeapi.co/api/v2/pokemon/');
+    $offset = ($request->has('offset')) ? $request->get('offset') : 0;
+    $limit = ($request->has('limit')) ? $request->get('limit') : env('POKEMON_LIST_DEFAULT_OFFSET');
+
+    $response = Http::get('https://pokeapi.co/api/v2/pokemon/?limit=' . $limit . '&offset=' . $offset);
 
     $jsonResponse = json_decode($response->body());
 
-    return view('home', ['data' => $jsonResponse]);
+    $pagination = [
+      'previous' => !is_null($jsonResponse->previous),
+      'next' => !is_null($jsonResponse->next),
+      'limit' => $limit,
+      'offset' => $offset
+    ];
+
+    return view('home', ['data' => $jsonResponse, 'pagination' => $pagination]);
   }
 
   public function pokemon($pokemonName)
