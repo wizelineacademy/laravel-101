@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', strtoupper($data->name));`
+@section('title', strtoupper($data->name))
 
 @section('content')
 
