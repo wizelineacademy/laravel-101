@@ -2,83 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 
 class PokemonController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index(Request $request)
+  {
+    $offset = ($request->has('offset')) ? $request->get('offset') : 0;
+    $limit = ($request->has('limit')) ? $request->get('limit') : env('POKEMON_LIST_DEFAULT_OFFSET');
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+    $response = Http::get('https://pokeapi.co/api/v2/pokemon/?limit=' . $limit . '&offset=' . $offset);
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    $jsonResponse = json_decode($response->body());
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+    $pagination = [
+      'previous' => !is_null($jsonResponse->previous),
+      'next' => !is_null($jsonResponse->next),
+      'limit' => $limit,
+      'offset' => $offset
+    ];
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+    return view('home', ['data' => $jsonResponse, 'pagination' => $pagination]);
+    //
+  }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+  /**
+   * Display the specified resource.
+   *
+   * @param  string  $slug
+   * @return \Illuminate\Http\Response
+   */
+  public function show($slug)
+  {
+    $response = Http::get('https://pokeapi.co/api/v2/pokemon/' . $slug);
+    $jsonResponse = json_decode($response->body());
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+    return view('pokemon', ['data' => $jsonResponse]);
+  }
 }
