@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Favorite;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Favorite;
 
 class FavoriteController extends Controller
 {
@@ -15,7 +16,15 @@ class FavoriteController extends Controller
    */
   public function store(Request $request)
   {
-    dd($request);
+    $user = Auth::user();
+    $slug = $request->get('slug');
+
+    $favorite = new Favorite();
+    $favorite->user_id = $user->id;
+    $favorite->slug = $slug;
+    $favorite->save();
+
+    return back();
   }
 
   /**
