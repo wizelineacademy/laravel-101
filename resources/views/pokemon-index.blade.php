@@ -10,6 +10,7 @@
                 <a href="/pokemon/{{ $pokemon->name }}">{{ strtoupper($pokemon->name) }}</a>
                 @if ($user)
                     <form action="/favorites" method="post">
+                        @csrf
                         <input type="hidden" name="slug" value="{{ $pokemon->name }}">
                         <p><button type="submit" class="btn btn-success">Add as Favorite</button></p>
                     </form>

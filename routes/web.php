@@ -24,6 +24,8 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
   return view('dashboard');
 })->name('dashboard');
 
+Route::resource('favorites', Controllers\FavoriteController::class)->only(['store', 'destroy']);
+
 // Auth Email verification routes
 
 Route::get('/email/verify', function () {
