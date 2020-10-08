@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,13 +16,15 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::get('/', [Controllers\HomeController::class, 'index']);
+Route::get('/', [Controllers\PokemonController::class, 'index']);
 
-Route::get('/pokemon/{pokemonName}', [Controllers\HomeController::class, 'pokemon']);
+Route::get('/pokemon/{slug}', [Controllers\PokemonController::class, 'show']);
 
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
   return view('dashboard');
 })->name('dashboard');
+
+// Auth Email verification routes
 
 Route::get('/email/verify', function () {
   return view('auth.verify-email');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class PokemonController extends Controller
@@ -14,7 +15,8 @@ class PokemonController extends Controller
    */
   public function index(Request $request)
   {
-    $offset = ($request->has('offset')) ? $request->get('offset') : 0;
+    $offset = $request->input('offset', 0);
+    $limit = $request->input('limit', env('POKEMON_LIST_DEFAULT_OFFSET'));
     $limit = ($request->has('limit')) ? $request->get('limit') : env('POKEMON_LIST_DEFAULT_OFFSET');
 
     $response = Http::get('https://pokeapi.co/api/v2/pokemon/?limit=' . $limit . '&offset=' . $offset);
@@ -28,8 +30,9 @@ class PokemonController extends Controller
       'offset' => $offset
     ];
 
-    return view('home', ['data' => $jsonResponse, 'pagination' => $pagination]);
-    //
+    $user = (Auth::check()) ? Auth::user() : false;
+
+    return view('pokemon-index', ['data' => $jsonResponse, 'pagination' => $pagination, 'user' => $user]);
   }
 
   /**
@@ -43,6 +46,6 @@ class PokemonController extends Controller
     $response = Http::get('https://pokeapi.co/api/v2/pokemon/' . $slug);
     $jsonResponse = json_decode($response->body());
 
-    return view('pokemon', ['data' => $jsonResponse]);
+    return view('pokemon-show', ['data' => $jsonResponse]);
   }
 }
