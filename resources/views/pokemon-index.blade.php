@@ -31,4 +31,15 @@
             class="btn btn-primary">Next</a>
 
     @endif
+
+    @if ($user->favorites->count() > 0)
+        <h2>Favorites List</h2>
+        <ul id="favorites-list">
+            @foreach ($user->favorites as $favorite)
+                <li>
+                    <a href="/pokemon/{{ $favorite->slug }}">{{ strtoupper($favorite->slug) }}</a>
+                </li>
+            @endforeach
+        </ul>
+    @endif
 @endsection
