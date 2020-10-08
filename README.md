@@ -35,7 +35,6 @@ touch database/database.sqlite
 composer install
 npm install
 npm run dev
-
 ```
 
 ### Run the migrations and build the database tables
